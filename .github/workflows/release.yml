@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build
-        run: cargo build --release && tar zcf rsecho-amd64.tar.gz target/debug/rsecho
+        run: cargo build --release && tar zcf rsecho-amd64.tar.gz target/release/rsecho
       - name: upload linux artifact
         uses: softprops/action-gh-release@v1
         with:
