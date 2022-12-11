@@ -24,7 +24,7 @@ WORKDIR /rsecho
 COPY ./ .
 
 RUN cargo build --target x86_64-unknown-linux-musl --release
-RUN find target/x86_64-unknown-linux-musl/release
+RUN strip -s /rsecho/target/x86_64-unknown-linux-musl/release/rsecho
 
 ####################################################################################################
 ## Final image
