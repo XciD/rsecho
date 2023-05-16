@@ -3,6 +3,7 @@ use hyper::body::HttpBody;
 use hyper::service::{make_service_fn, service_fn};
 use hyper::{Body, Request, Response, Server};
 use std::convert::Infallible;
+use std::env;
 use std::fmt::Write;
 use std::net::SocketAddr;
 
@@ -13,6 +14,8 @@ async fn echo_http(req: Request<Body>) -> Result<Response<Body>, Infallible> {
         *resp.status_mut() = hyper::StatusCode::PAYLOAD_TOO_LARGE;
         return Ok(resp);
     }
+
+    println!("Got request: {:?}", req);
 
     let mut lines = BytesMut::new();
 
@@ -25,6 +28,12 @@ async fn echo_http(req: Request<Body>) -> Result<Response<Body>, Infallible> {
         let _ = lines.write_str(format!("{}: ", header.0).as_str());
         lines.put_slice(header.1.as_bytes());
         lines.put_u8(0x0A);
+    }
+
+    // Output headers
+    let _ = lines.write_str("\n\n-- ENV --\n");
+    for (key, value) in env::vars() {
+        let _ = lines.write_str(format!("{key}: {value}\n").as_str());
     }
 
     // Output body
